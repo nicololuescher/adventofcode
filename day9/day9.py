@@ -22,7 +22,9 @@ def visualize(rope):
     for y in reversed(range(yExtreme[0], yExtreme[1] + 1)):
         for x in range(xExtreme[0], xExtreme[1] + 1):
             if (x,y) in rope:
-                print("O", end="")
+                print(rope.index((x,y)) % 10, end="")
+            elif (x,y) == (0,0):
+                print("X", end="")
             else:
                 print(".", end="")
         print("")
@@ -41,39 +43,52 @@ def move(position, direction):
     return position
 
 def moveTail(difference):
-    position = (0,0)
-    if difference[0] == 0 or difference[1] == 0:
-        if difference[0] == 0 and difference[1] == 2:
-            position = (0, 1)
-        elif difference[0] == 0 and difference[1] == -2:
-            position = (0, -1)
-        elif difference[0] == 2 and difference[1] == 0:
-            position = (1, 0)
-        elif difference[0] == -2 and difference[1] == 0:
-            position = (-1, 0)
-    else:
-        if difference[0] > 1 and difference[1] == 1 or difference[0] == 1 and difference[1] > 1:
-            position = (1, 1)
-        elif difference[0] > 1 and difference[1] == -1 or difference[0] == 1 and difference[1] < -1:
-            position = (1, -1)
-        elif difference[0] < -1 and difference[1] == 1 or difference[0] == -1 and difference[1] > 1:
-            position = (-1, 1)
-        elif difference[0] < -1 and difference[1] == -1 or difference[0] == -1 and difference[1] < -1:
-            position = (-1, -1)  
-    return position
+    if difference[0] == 0 and difference[1] == 2:
+        return (0, 1)
+    elif difference[0] == 1 and difference[1] == 2:
+        return (1, 1)
+    elif difference[0] == 2 and difference[1] == 2:
+        return (1, 1)
+    elif difference[0] == 2 and difference[1] == 1:
+        return (1, 1)
+    elif difference[0] == 2 and difference[1] == 0:
+        return (1, 0)
+    elif difference[0] == 2 and difference[1] == -1:
+        return (1, -1)
+    elif difference[0] == 2 and difference[1] == -2:
+        return (1, -1)
+    elif difference[0] == 1 and difference[1] == -2:
+        return (1, -1)
+    elif difference[0] == 0 and difference[1] == -2:
+        return (0, -1)
+    elif difference[0] == -1 and difference[1] == -2:
+        return (-1, -1)
+    elif difference[0] == -2 and difference[1] == -2:
+        return (-1, -1)
+    elif difference[0] == -2 and difference[1] == -1:
+        return (-1, -1)
+    elif difference[0] == -2 and difference[1] == 0:
+        return (-1, 0)
+    elif difference[0] == -2 and difference[1] == 1:
+        return (-1, 1)
+    elif difference[0] == -2 and difference[1] == 2:
+        return (-1, 1)
+    elif difference[0] == -1 and difference[1] == 2:
+        return (-1, 1)
+    return (0,0)
 
 def main():
     steps = getData()
-    steps = [
-        ["R", 5],
-        ["U", 8], 
-        ["L", 8], 
-        ["D", 3], 
-        ["R", 17], 
-        ["D", 10], 
-        ["L", 25], 
-        ["U", 20]
-        ]
+    # steps = [
+    #     ["R", 5],
+    #     ["U", 8], 
+    #     ["L", 8], 
+    #     ["D", 3], 
+    #     ["R", 17], 
+    #     ["D", 10], 
+    #     ["L", 25], 
+    #     ["U", 20]
+    #     ]
     # steps = [["U", 5], ["R", 4]]
     head = (0,0)
     tail = (0,0)
@@ -81,27 +96,23 @@ def main():
     visited = []
     longVisited = []
     for step in steps:
-        print("step:", step)
         for i in range(int(step[1])):
             head = move(head, step[0])
             tailDiff = moveTail((head[0] - tail[0], head[1] - tail[1]))
             tail = (tail[0] + tailDiff[0], tail[1] + tailDiff[1])
             
             longRope[0] = move(longRope[0], step[0])
-            for i in range(1, len(longRope)):
-                diff = (longRope[i-1][0] - longRope[i][0], longRope[i-1][1] - longRope[i][1])
-                longRope[i] = (longRope[i][0] + diff[0], longRope[i][1] + diff[1])
+            for j in range(1, len(longRope)):
+                diff = moveTail((longRope[j-1][0] - longRope[j][0], longRope[j-1][1] - longRope[j][1]))
+                longRope[j] = (longRope[j][0] + diff[0], longRope[j][1] + diff[1])
             
-            # print(head, tail)
             if tail not in visited:
                 visited.append(tail)
-            
+                
             if longRope[9] not in longVisited:
                 longVisited.append(longRope[9])
-            visualize(longRope)
-    # print(head, tail)
-    # print(len(visited))
-    # print(len(longVisited))
+    print(len(visited))
+    print(len(longVisited))
     return 0
 
 if __name__ == "__main__":
