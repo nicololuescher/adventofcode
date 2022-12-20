@@ -7,16 +7,19 @@ class Monkey:
         self.operation = None
         for item in items:
             self.items.put(item)
+        self.inspections = 0
     
-    def evaluate_items(self):
+    def evaluate_items(self, monkeys, worried = False):
         while not self.items.empty():
+            self.inspections += 1
             item = self.items.get()
             worry_level = self.evaluate(item)
-            worry_level = math.floor(worry_level / 3)
+            if not worried:
+                worry_level = math.floor(worry_level / 3)
             if(self.test(worry_level)):
-                return self.true_monkey
+                monkeys[self.true_monkey].give_item(worry_level % self.lcm)
             else:
-                return self.false_monkey
+                monkeys[self.false_monkey].give_item(worry_level % self.lcm)
     
     def get_item(self):
         return self.items.get()
@@ -28,7 +31,10 @@ class Monkey:
         self.operation = operation
     
     def set_test(self, test):
-        self.devisor = int(test)
+        self.divisor = int(test)
+    
+    def set_lcm(self, lcm):
+        self.lcm = int(lcm)
     
     def set_true_monkey(self, monkey):
         self.true_monkey = int(monkey)
@@ -49,4 +55,4 @@ class Monkey:
             return calculation[0] * calculation[1]
     
     def test(self, value):
-        return value % self.devisor == 0
+        return value % self.divisor == 0
