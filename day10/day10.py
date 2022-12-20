@@ -7,29 +7,15 @@ def get_data(path):
             returnList.append(line.strip().split(" "))
         return returnList
 
-def draw_pixel(counter, x, crt):
-    for i in range(40):
-        if (counter % 40) - 1 == i:
-            print("X", end="")
-        else:
-            print(".", end="")
-    print()
-    for i in range(40):
-        if i >= x - 1 and i <= x + 1:
-            print("X", end="")
-        else:
-            print(".", end="")
-    print()
-    
+def draw_pixel(counter, x, crt):    
     array_position = math.floor((counter - 1) / 40)
     if(len(crt) <= array_position):
         crt.append([])
         
-    if counter % 40 > x -1 and counter % 40 < x + 1:
+    if (counter - 1) % 40 >= x - 1 and (counter - 1) % 40 <= x + 1:
         crt[array_position].append("#")
     else:
         crt[array_position].append(".")
-    print("".join(crt[array_position]), "\n")
     return crt
 
 def evaluate(instruction, counter, x, total, crt):
@@ -48,8 +34,8 @@ def evaluate(instruction, counter, x, total, crt):
         return counter, x, total, crt
 
 def main():
-    #instructions = get_data("day10/data.txt")
-    instructions = get_data("day10/test_data.txt")
+    instructions = get_data("day10/data.txt")
+    #instructions = get_data("day10/test_data.txt")
     counter = 1
     x = 1
     total = 0
